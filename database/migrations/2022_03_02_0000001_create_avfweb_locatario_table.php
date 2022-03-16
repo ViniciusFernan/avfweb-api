@@ -31,6 +31,6 @@ class CreateAvfwebLocatarioTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comodo');
+        Schema::dropIfExists('locatario');
     }
 }

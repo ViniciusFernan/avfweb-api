@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\ValidarTokenController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\PrevisaoTempo\PrevisaoTempoController as PrevisaoTempo;
+use App\Http\Controllers\Api\ContasReceberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,4 +32,5 @@ Route::namespace('API')->name('api')->group(function () {
     Route::post('/previsaotempo', [PrevisaoTempo::class, 'getPrevisaoTempo'])->name('previsaotempo');
 
     Route::post('/registerAPI', [RegisterController::class, 'Register'])->name('register');
+    Route::post('/novoContasReceber', [ContasReceberController::class, 'inserirRegistroPagamento'])->name('register');
 });

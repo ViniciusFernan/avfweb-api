@@ -27,5 +27,16 @@ class ContaReceber extends Model
         'status'
     ];
 
+    public function novoContasReceber(){
+        try{
+
+
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+    }
+
 
 }
