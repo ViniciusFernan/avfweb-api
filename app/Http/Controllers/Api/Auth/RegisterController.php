@@ -4,12 +4,12 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\User;
+use App\Http\Controllers\ApiResponseController;
+use App\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class RegisterController extends BaseController
+class RegisterController extends ApiResponseController
 {
     /**
      * Register api*
@@ -33,7 +33,7 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['c_password'] = (isset($input['c_password']) && !empty($input['c_password'])) ? $input['c_password'] : $input['password'];
-        $user = User::novoUsuario($input);
+        $user = Usuario::novoUsuario($input);
         if($user instanceof \Exception) throw ($user);
 
         $success['token'] =  $user->createToken('MyApp')->accessToken;

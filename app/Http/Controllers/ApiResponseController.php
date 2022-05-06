@@ -1,13 +1,12 @@
 <?php
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as Controller;
 
 
-class BaseController extends Controller
+class ApiResponseController extends Controller
 {
     /**
      * success response method.
@@ -25,11 +24,11 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $errorMessages = [], $code = 404) {
-        $response = ['success' => false, 'message' => $error ];
+    public function sendError($errorMSG, $errorData = [], $code = 404) {
+        $response = ['success' => false, 'message' => $errorMSG ];
 
-        if (!empty($errorMessages)) {
-            $response['data'] = $errorMessages;
+        if (!empty($errorData)) {
+            $response['data'] = $errorData;
         }
 
         return response()->json($response, $code);

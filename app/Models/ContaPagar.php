@@ -9,7 +9,6 @@ class ContaPagar extends Model
 {
     use HasFactory;
     protected $table = 'contas_pagar';
-
     protected $primaryKey = 'id_pagar';
 
     /**

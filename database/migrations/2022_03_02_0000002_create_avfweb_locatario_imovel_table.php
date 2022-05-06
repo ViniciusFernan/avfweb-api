@@ -14,13 +14,13 @@ class CreateAvfwebLocatarioImovelTable extends Migration
     public function up() {
         if (!Schema::hasTable('locatario_imovel')) {
             Schema::create('locatario_imovel', function (Blueprint $table) {
-                $table->integer('id_locatario')->unsigned();
+                $table->integer('id_cliente')->unsigned();
                 $table->integer('id_imovel')->unsigned();
                 $table->timestamps();
             });
 
             Schema::table('locatario_imovel', function ($table) {
-                $table->foreign('id_locatario')->references('id_locatario')->on('locatario');
+                $table->foreign('id_cliente')->references('id_cliente')->on('cliente');
                 $table->foreign('id_imovel')->references('id_imovel')->on('imovel');
             });
         }

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Helpers\Helper;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiResponseController;
+
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use App\Models\User;
-use App\Models\Rule;
+use App\Models\Usuario;
+//use App\Models\Rule;
 use App\Models\UserRule;
 use Validator;
 
-class UserController extends Controller
+class UsuarioController extends ApiResponseController
 {
 
     protected $user;
@@ -28,13 +28,18 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
+        try{
 
-        if(Helper::hasPermission('usuarios') || Helper::hasSuperAdmin())
-            $this->user = User::paginate(15);
-        else
-            $this->user = User::where('id_user', '=', Auth::user()->id_user)->paginate(1);
+            if(Helper::hasPermission('usuarios') || Helper::hasSuperAdmin())
+                $this->user = Usuario::paginate(15);
+            else
+                $this->user = Usuario::where('id_user', '=', Auth::user()->id_user)->paginate(1);
 
-        return view('backend.usuario.listaUsuario', ['users' => $this->user]);
+            return $this->sendResponse(['users' => $this->user]);
+
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
+        }
     }
 
     /**
@@ -57,18 +62,23 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
+        try{
 
-        if(!Helper::hasPermission('usuarios') || Helper::hasSuperAdmin())
-            $id = Auth::user()->id_user;
+            if(!Helper::hasPermission('usuarios') || Helper::hasSuperAdmin())
+                $id = Auth::user()->id_user;
 
-        return view(
-            'backend.usuario.editarUsuario',
-                [
-                    'user' => User::findOrFail($id),
-                    'user_rule' => UserRule::where('id_user', '=', $id)->get(),
-                    'rules' => Rule::all()
-                ]
-        );
+            $data = [
+                'user' => Usuario::findOrFail($id),
+                'user_rule' => UserRule::where('id_user', '=', $id)->get(),
+                'rules' => Rule::all()
+            ];
+
+            return $this->sendResponse($data);
+
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
+        }
+
     }
 
     /**
@@ -106,15 +116,14 @@ class UserController extends Controller
                 $userData['password'] = bcrypt($userData['password']);
 
 
-            $this->user = User::find($id);
+            $this->user = Usuario::find($id);
             $this->user->fill($userData);
             $this->user->save();
 
-            return Redirect::back()->with('alertView', Helper::alertView('Usuario Editado com sucesso'));
-
+            return $this->sendResponse('Usuario Editado com sucesso');
         } catch (\Exception $e) {
             $code = !empty($e->getCode()) ? $e->getCode() : 0;
-            return Redirect::back()->with('alertView', Helper::alertView($e->getMessage(), $code));
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
         }
     }
 
@@ -134,15 +143,17 @@ class UserController extends Controller
             $this->user = User::find($id);
             $this->user->fill(['status'=>'0']);
 
+            $this->user->save();
+
             if($id != Auth::user()->id_user)
-                return Redirect('/login')->with('alertView', Helper::alertView('Seu usuario foi apagad com sucesso, não há como recupera-lo','1'));
-            else if($this->user->save())
-                return Redirect('/admin/usuario')->with('alertView', Helper::alertView('Rule apagada com sucesso','1'));
+               $mensagem = 'Seu usuario foi apagad com sucesso, não há como recupera-lo';
             else
                 throw new Exception('Não foi possivel apagar regra');
 
+            return $this->sendResponse($mensagem);
+
         } catch (\Exception $e) {
-            return Redirect::back()->with('alertView', Helper::alertView($e->getMessage(),'2'));
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
         }
     }
 
@@ -171,14 +182,13 @@ class UserController extends Controller
             //futuramente incluir dentro de uma transação separada
             $userRule->where('id_user',$id)->delete();
 
-            if($userRule->insert($dataSet))
-                return Redirect::back()->with('alertView', Helper::alertView('Rules adicionada ao usuario com sucesso','1'));
-            else
+            if(! $userRule->insert($dataSet))
                 throw new Exception('Não foi possivel adicionar regra');
 
+            return $this->sendResponse('Rules adicionada ao usuario com sucesso');
 
         } catch (\Exception $e) {
-            return Redirect::back()->with('alertView', Helper::alertView($e->getMessage(),'2'));
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
         }
     }
 }

@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAvfwebLocatarioTable extends Migration
+class CreateUsuarioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +13,14 @@ class CreateAvfwebLocatarioTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('locatario')) {
-            Schema::create('locatario', function (Blueprint $table) {
-                $table->increments('id_locatario');
-                $table->string('nome', 50);
-
-                $table->text('descricao');
+        if (!Schema::hasTable('usuario')) {
+            Schema::create('usuario', function (Blueprint $table) {
+                //$table->id();
+                $table->increments('id_usuario');
+                $table->string('email')->unique();
+                $table->string('password');
+                $table->rememberToken();
                 $table->timestamps();
-                $table->tinyInteger('status');
             });
         }
     }
@@ -31,6 +32,6 @@ class CreateAvfwebLocatarioTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('locatario');
+        Schema::dropIfExists('usuario');
     }
 }

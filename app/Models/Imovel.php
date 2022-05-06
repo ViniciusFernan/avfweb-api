@@ -22,6 +22,6 @@ class Imovel extends Model
 
 
     public function getLocatarioImovel() {
-        return $this->belongsToMany(User::class,  'locatario_imovel', 'id_locatario', 'id_imovel');
+        return $this->belongsToMany(Usuario::class,  'locatario_imovel', 'id_locatario', 'id_imovel');
     }
 }

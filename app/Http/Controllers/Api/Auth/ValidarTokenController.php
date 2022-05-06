@@ -4,11 +4,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Controllers\API\ApiResponseController as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class ValidarTokenController extends BaseController
+class ValidarTokenController extends ApiResponseController
 {
 
     /**

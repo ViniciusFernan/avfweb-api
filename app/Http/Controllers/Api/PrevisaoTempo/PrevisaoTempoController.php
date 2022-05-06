@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\PrevisaoTempo;
 
 use App\Helpers\Helper;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiResponseController as BaseController;
 use App\Models\PrevisaoTempo;
 use Illuminate\Http\Request;
 
-class PrevisaoTempoController extends Controller
+class PrevisaoTempoController extends ApiResponseController
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class PrevisaoTempoController extends Controller
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -28,15 +28,15 @@ class PrevisaoTempoController extends Controller
         try{
             if(!empty($request)) {
                 $nomeCidade = Helper::removeAcentos($request->get('nome'));
-                $cidades = (new PrevisaoTempo\Cidades())->getCidadesLista($nomeCidade);
+                $cidades = (new PrevisaoTempo\PrevisaoTempo())->getCidadesLista($nomeCidade);
                 if($cidades instanceof \Exception) throw $cidades;
             } else {
-                $cidades = (new PrevisaoTempo\Cidades())->getCidadesLista('sao paulo');
+                $cidades = (new PrevisaoTempo\PrevisaoTempo())->getCidadesLista('sao paulo');
                 if($cidades instanceof \Exception) throw $cidades;
             }
-            return response()->json(['success'=>true,  'data' => $cidades]);
+            return $this->sendResponse($cidades);
         } catch (\Exception $e) {
-            return ['success'=>false,  'data' => $e->getMessage()];
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
         }
     }
     /**
@@ -53,9 +53,10 @@ class PrevisaoTempoController extends Controller
 
             if($previsao instanceof \Exception) throw $previsao;
 
-            return response()->json(['success'=>true,  'data' => $previsao]);
+            return $this->sendResponse($previsao);
         } catch (\Exception $e) {
-            return ['success'=>false,  'data' => $e->getMessage()];
+            return $this->sendError($e->getMessage(),$e->getTrace(),$e->getCode());
+
         }
     }
 
@@ -67,7 +68,7 @@ class PrevisaoTempoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->sendError('ação inexistente', '', '404');
     }
 
     /**
@@ -78,7 +79,7 @@ class PrevisaoTempoController extends Controller
      */
     public function show($id)
     {
-        //
+        return $this->sendError('ação inexistente', '', '404');
     }
 
     /**
@@ -90,7 +91,7 @@ class PrevisaoTempoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $this->sendError('ação inexistente', '', '404');
     }
 
     /**
@@ -101,6 +102,6 @@ class PrevisaoTempoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return $this->sendError('ação inexistente', '', '404');
     }
 }
